@@ -163,8 +163,7 @@ This will open a web browser and reload the preview every time the contents chan
 
 ### Image Utilities
 
-Often, emails need to be designed from a PSD of PDF file. TvrboMail provides the tools to convert them into a PNG file that you can use and crop, using the `addImage(config.SOURCE_IMAGE, {...})` method. 
-
+Often, emails are implemented after a PSD of PDF design file. TvrboMail provides the tools to convert them into a PNG file that you can import and crop, using the `addImage(config.SOURCE_IMAGE, {...})` method. 
 
 ---
 `by Tvrbo`
