@@ -22,7 +22,7 @@ gulp.task('default', function() {
   console.log("   $ gulp translate                    Use every language's strings.json to translate the HTML file");
   console.log("");
   console.log("   $ gulp psd                          Convert the SOURCE_PSD file into PNG");
-  console.log("   $ gulp psd [--file <filename.psd>]  Convert <filename.psd> into PNG");
+  console.log("   $ gulp psd --file <filename.psd>    Convert <filename.psd> into PNG");
   console.log("   $ gulp pdf --file <filename.pdf>");
   console.log();
 });

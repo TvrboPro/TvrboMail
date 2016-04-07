@@ -7,7 +7,7 @@ It provides the tools to localize a template into several languages, to import a
 
 For Live Reaload, you need to install the extension for your browser.
 
-### Defining the contents
+## Defining the contents
 Edit the `input-contents.js` file and define your structure and contents of the email.
 
 The available building blocks and their respective parameters are listed below:
@@ -117,6 +117,22 @@ However, an invocation like this will add a button with a blue text:
 
 All the possible parameters are listed above as a reference. 
 		
+## Main operations
+
+If you just run `gulp`, you will see a list of available actions:
+
+	Available actions:
+	
+	   $ gulp dev                          Live development on localhost:8080
+	   $ gulp make                         Compile onto '/Users/jordi/git/mailer-gen/output'
+	   $ gulp make --translations          Compile and generate the translation folders
+	   $ gulp translate                    Use every language's strings.json to translate the HTML file
+	
+	   $ gulp psd                          Convert the SOURCE_PSD file into PNG
+	   $ gulp psd --file <filename.psd>    Convert <filename.psd> into PNG
+	   $ gulp pdf --file <filename.pdf>
+
+
 ### Email compilation
 
 When you are done defining the contents, open a terminal, go to the root of your project and run:
@@ -131,9 +147,11 @@ This will generate the email in the folder `output/template`. Open it and check 
 
 If you run `gulp make --translations`, Gulp will create a folder for each language defined in `config.LANGUAGE_LIST` (`config.js`).
 
-Every folder constains an `index.html` file with template strings and `strings.json`. This is where you need to translate the strings. 
+Each folder constains an `index.html` file with template strings and `strings.json`. This is where you need to translate the strings. 
 
 	WARNING: If you have changed any of the strings.json file, it will be erased!
+
+Once you're done translating the JSON files, run `gulp translate` and the HTML file of each language folder will be translated. 
 
 ### Live development
 
@@ -142,6 +160,11 @@ To monitor your changes to `input-contents.js` in real time:
 	$ gulp dev
 	
 This will open a web browser and reload the preview every time the contents change.
+
+### Image Utilities
+
+Often, emails need to be designed from a PSD of PDF file. TvrboMail provides the tools to convert them into a PNG file that you can use and crop, using the `addImage(config.SOURCE_IMAGE, {...})` method. 
+
 
 ---
 `by Tvrbo`
