@@ -46,11 +46,13 @@ gulp.task('media', function(){
   // when the template is copied to the main language folder. This task ensures that the last
   // version of the images in the template folder are in sync with the main language content
 
-  var prefix = config.PROJECT_PREFIX ? (config.PROJECT_PREFIX + '-') : '';
+  setTimeout(function(){
+	  var prefix = config.PROJECT_PREFIX ? (config.PROJECT_PREFIX + '-') : '';
 
-
-  gulp.src(path.join(process.cwd(), 'output', 'template', prefix + "img-*.{jpg,png,gif}"))
-    .pipe(gulp.dest(path.join('output', config.ORIGINAL_LANGUAGE)));
+	  gulp.src(path.join(process.cwd(), 'output', 'template', prefix + "img-*.{jpg,jpeg,png,gif}"))
+	    .pipe(gulp.dest(path.join(process.cwd(), 'output', config.ORIGINAL_LANGUAGE)))
+	    .pipe(plugins.connect.reload());
+  }, 200);
 });
 
 gulp.task('watch', function() {
@@ -58,7 +60,7 @@ gulp.task('watch', function() {
 
   var prefix = config.PROJECT_PREFIX ? (config.PROJECT_PREFIX + '-') : '';
 
-  gulp.watch(path.join(process.cwd(), 'output', 'template', prefix + "img-*.{jpg,png,gif}"), ['media']);
+  gulp.watch(path.join(process.cwd(), 'output', 'template', prefix + "img-*.{jpg,jpeg,png,gif}"), ['media']);
 });
 
 gulp.task('connect', function() {
@@ -216,7 +218,7 @@ gulp.task('email', function(){
 	emailHTML = emailHTML.replace(/<img alt="([^"]*)" src=(['"])([a-z0-9\-\.]+)/ig, "<img alt=\"$1\" src=$2cid:$3");
 
     transporter.sendMail({
-       from: 'Email Tester <node@test-mailer.me>',
+       from: config.FROM_EMAIL,
        to: argv.to,
        subject: 'Test email (' + config.PROJECT_PREFIX + ')',
        text: 'This is an email demonstrating the final appearence of the template ' + config.PROJECT_PREFIX,

@@ -4,7 +4,8 @@ var path = require('path');
 nconf.env();
 
 var defaults = {
-    PROJECT_PREFIX: 'example',  // i.e. project short name
+    PROJECT_PREFIX: 'coral',  // i.e. project short name
+    FROM_EMAIL: 'Email Tester <node@test-mailer.me>',  // Used as the email sender for testing purposes
 
     SOURCE_FOLDER: path.join(process.cwd(), "input"),
     SOURCE_PSD: path.join(process.cwd(), "input", "template.psd"),  // CONVERTED TO THE PNG FILE BELOW
