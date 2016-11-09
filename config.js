@@ -4,13 +4,14 @@ var path = require('path');
 nconf.env();
 
 var defaults = {
-    PROJECT_PREFIX: 'coral',  // i.e. project short name
-    FROM_EMAIL: 'Email Tester <node@test-mailer.me>',  // Used as the email sender for testing purposes
+    PROJECT_PREFIX: 'project',  // i.e. project short name
+    EMAIL_USER: 'your.account@gmail.com',
+    EMAIL_PASSWORD: '__YOUR_PASSWORD_HERE__',
 
-    SOURCE_FOLDER: path.join(process.cwd(), "input"),
-    SOURCE_PSD: path.join(process.cwd(), "input", "template.psd"),  // CONVERTED TO THE PNG FILE BELOW
-    SOURCE_IMAGE: path.join(process.cwd(), "input", "template.png"),
-    TARGET_FOLDER: path.join(process.cwd(), "output"),
+    SOURCE_FOLDER: path.join(__dirname, "input"),
+    SOURCE_PSD: path.join(__dirname, "input", "template.psd"),  // CONVERTED TO THE PNG FILE BELOW
+    SOURCE_IMAGE: path.join(__dirname, "input", "template.png"),
+    TARGET_FOLDER: path.join(__dirname, "output"),
 
     // Images that are not added via addImage(...) can be declared here
     // so they will be copied to the output folder right away

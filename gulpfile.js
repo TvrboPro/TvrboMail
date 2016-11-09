@@ -20,6 +20,7 @@ gulp.task('default', function() {
   console.log("   $ gulp make                         Compile onto '" + config.TARGET_FOLDER + "'");
   console.log("   $ gulp make --translations          Compile and generate the translation folders");
   console.log("   $ gulp translate                    Use every language's strings.json to translate the HTML file");
+  console.log("   $ gulp email --to user@addr         Send a test email");
   console.log("");
   console.log("   $ gulp psd                          Convert the SOURCE_PSD file into PNG");
   console.log("   $ gulp psd --file <filename.psd>    Convert <filename.psd> into PNG");
@@ -187,45 +188,65 @@ gulp.task('pdf', function(){
 	});
 });
 
+
 gulp.task('email', function(){
-
-	// Mailing
-
 	if(!argv.to) {
 		console.log("Error: Invalid parameters. \n\nExpected: gulp email --to user@domain.com");
 		return process.exit();
 	}
 
-	var nodemailer = require('nodemailer');
-	var transporter = nodemailer.createTransport();
+	var emailHTML = fs.readFileSync(__dirname + '/output/' + config.ORIGINAL_LANGUAGE + '/' + config.PROJECT_PREFIX + '.html').toString();
 
-	var emailHTML = fs.readFileSync(process.cwd() + '/output/' + config.ORIGINAL_LANGUAGE + '/' + config.PROJECT_PREFIX + '.html').toString();
-	var imagePattern = /<img alt="[^"]*" src=(['"])([a-z0-9\-\.]+)/ig;
+  console.log("\nPlease, check on your spam folder (" + argv.to + ")\n");
 
-	var emailImages = emailHTML.match(imagePattern) || [];
-
-	function imgReplaceFunction(imgStr){
-	   imgStr = imgStr.replace(/<img alt="[^"]*" src=(['"])/ig, '');
-	   return {
-	     filename: imgStr,
-	     path: process.cwd() + '/output/' + config.ORIGINAL_LANGUAGE + '/' + imgStr,
-	     cid: imgStr
-	   };
-	}
-
-	emailImages = emailImages.map(imgReplaceFunction);
-
-	emailHTML = emailHTML.replace(/<img alt="([^"]*)" src=(['"])([a-z0-9\-\.]+)/ig, "<img alt=\"$1\" src=$2cid:$3");
-
-    transporter.sendMail({
-       from: config.FROM_EMAIL,
-       to: argv.to,
-       subject: 'Test email (' + config.PROJECT_PREFIX + ')',
-       text: 'This is an email demonstrating the final appearence of the template ' + config.PROJECT_PREFIX,
-       html: emailHTML,
-       attachments: emailImages
-    });
-
-    console.log("\nPlease, check on your spam folder (" + argv.to + ")\n");
-
+  return sendEmail(argv.to, emailHTML);
 });
+
+
+const imagePattern = /<img alt=['"][^'"]*['"] src=(['"])([a-z0-9\-\.]+)['"]/ig;
+
+function sendEmail(recipientEmail, htmlContent){
+  if(!htmlContent) return;
+  let params = {
+    from: `Email Tester <${config.EMAIL_USER}>`,
+    to: recipientEmail,
+    subject: 'Test email (' + config.PROJECT_PREFIX + ')',
+    text: 'This is an email demonstrating the final appearence of the template ' + config.PROJECT_PREFIX,
+    html: htmlContent
+  };
+
+  var nodemailer = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: config.EMAIL_USER,
+      pass: config.EMAIL_PASSWORD
+    }
+  });
+
+  var contentImages = htmlContent.match(imagePattern);
+  if(contentImages) {
+    contentImages = contentImages.map(imgReplaceFunction);
+
+    if(contentImages.length) {
+      htmlContent = htmlContent.replace(/<img alt="([^"]*)" src=(['"])[a-zA-z]+-img-([0-9]+).[a-zA-z]+(['"])/ig, "<img alt=\"$1\" src=$2cid:EMAIL_IMAGE_$3$4");
+      params.html = htmlContent;
+
+      params.attachments = contentImages;
+    }
+  }
+
+  return transporter.sendMail(params);
+}
+
+function imgReplaceFunction(imgStr, index){
+   imgStr = imgStr.replace(/<img alt="[^"]*" src=(['"])/ig, '').replace(/"$/, '');
+   return {
+     filename: imgStr,
+     content: fs.readFileSync(process.cwd() + '/output/' + config.ORIGINAL_LANGUAGE + '/' + imgStr),
+    //  path: process.cwd() + '/app/lib/mails/' + imgStr,
+     cid: 'EMAIL_IMAGE_' + index
+   }
+}
