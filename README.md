@@ -165,5 +165,7 @@ This will open a web browser and reload the preview every time the contents chan
 
 Often, emails are implemented after a PSD of PDF design file. TvrboMail provides the tools to convert them into a PNG file that you can import and crop, using the `addImage(config.SOURCE_IMAGE, {...})` method. 
 
+**NOTE:** Image manipulation and conversion depends on the **ImageMagick** library. To Install it on a mac, you can use [Homebrew](http://brewformulas.org/Imagemagick)
+
 ---
 `by Tvrbo`
